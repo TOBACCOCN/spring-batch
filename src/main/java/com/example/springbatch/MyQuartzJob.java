@@ -2,15 +2,14 @@ package com.example.springbatch;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ChunkListener;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -19,19 +18,21 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.util.Arrays;
+import java.util.Date;
 
 @Slf4j
-@Configuration
-@EnableBatchProcessing
+@Configuration("myQuartzJob")
 @RequiredArgsConstructor
-public class MySpringBatchConfiguration {
+public class MyQuartzJob extends QuartzJobBean {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final JobExecutionListener jobExecutionListener;
     private final ChunkListener chunkListener;
+    private final JobLauncher jobLauncher;
 
     @Bean
     public Job myJob() {
@@ -94,4 +95,15 @@ public class MySpringBatchConfiguration {
         }).build();
     }
 
+    @Override
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+        JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+        jobParametersBuilder.addString("foo", "bar");
+        jobParametersBuilder.addDate("date", new Date());
+        try {
+            jobLauncher.run(myJob(), jobParametersBuilder.toJobParameters());
+        } catch (Exception e) {
+            ErrorPrintUtil.printErrorMsg(log, e);
+        }
+    }
 }

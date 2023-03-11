@@ -20,7 +20,7 @@ import java.util.Date;
  * @date 2019.6.1
  */
 @Slf4j
-@Component
+// @Component
 @RequiredArgsConstructor
 public class ScheduleTask {
 
