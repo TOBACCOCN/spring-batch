@@ -1,19 +1,19 @@
 package com.example.springbatch;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 
- * @TableName my_batch_job
+ * @TableName my_cron_job
  */
-@TableName(value ="my_batch_job")
+@TableName(value ="my_cron_job")
 @Data
-public class MyBatchJob implements Serializable {
+public class MyCronJob implements Serializable {
     /**
      * 
      */
@@ -31,12 +31,6 @@ public class MyBatchJob implements Serializable {
      */
     @TableField(value = "JOB_NAME")
     private String jobName;
-
-    /**
-     * class 名称
-     */
-    @TableField(value = "CLASS_NAME")
-    private String className;
 
     /**
      * cron 表达式

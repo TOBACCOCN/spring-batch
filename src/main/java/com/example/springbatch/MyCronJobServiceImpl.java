@@ -8,28 +8,29 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author TOBACCO
- * @description 针对表【my_batch_job】的数据库操作Service实现
+ * @description 针对表【my_cron_job】的数据库操作Service实现
  * @createDate 2023-03-11 13:08:12
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MyBatchJobServiceImpl extends ServiceImpl<MyBatchJobMapper, MyBatchJob>
-        implements MyBatchJobService {
+public class MyCronJobServiceImpl extends ServiceImpl<MyCronJobMapper, MyCronJob>
+        implements MyCronJobService {
 
-    private final MyBatchJobMapper myBatchJobMapper;
+    private final MyCronJobMapper myCronJobMapper;
     private final Scheduler scheduler;
 
     @Override
     public Result startJob(String jobId) {
         try {
-            MyBatchJob myBatchJob = myBatchJobMapper.selectById(jobId);
-            if (myBatchJob == null) {
+            MyCronJob myCronJob = myCronJobMapper.selectById(jobId);
+            if (myCronJob == null) {
                 return Result.getInstance(ResultEnum.NO_JOB_ID_FOUND);
             }
-            Class<?> clazz = Class.forName(myBatchJob.getClassName());
-            JobDetail jobDetail = JobBuilder.newJob((Class<? extends Job>) clazz).build();
-            CronTrigger trigger = TriggerBuilder.newTrigger().withSchedule(CronScheduleBuilder.cronSchedule(myBatchJob.getCron())).build();
+            JobDataMap jobDataMap = new JobDataMap();
+            jobDataMap.put(Constant.QUARTZ_JOB_DATA_TARGET_BEAN_NAME, myCronJob.getJobName());
+            JobDetail jobDetail = JobBuilder.newJob(Job.class).setJobData(jobDataMap).build();
+            CronTrigger trigger = TriggerBuilder.newTrigger().withSchedule(CronScheduleBuilder.cronSchedule(myCronJob.getCron())).build();
             scheduler.start();
             scheduler.scheduleJob(jobDetail, trigger);
             return Result.getInstance(ResultEnum.SUCCESS);
