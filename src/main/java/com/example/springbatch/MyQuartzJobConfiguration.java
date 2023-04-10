@@ -1,6 +1,7 @@
 package com.example.springbatch;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
@@ -11,6 +12,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Configuration
+@ConditionalOnProperty(prefix = "quartz.job.simple", value = "autorun")
 @RequiredArgsConstructor
 public class MyQuartzJobConfiguration {
 

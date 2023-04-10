@@ -10,4 +10,4 @@ create table my_cron_job
 );
 
 INSERT INTO test.my_cron_job (JOB_ID, VERSION, JOB_NAME, CRON) VALUES (1, 1, 'myBatchJob', '0/10 * * * * ?');
-INSERT INTO test.my_cron_job (JOB_ID, VERSION, JOB_NAME, CRON) VALUES (1, 1, 'myBatchJob1', '0/10 * * * * ?');
+INSERT INTO test.my_cron_job (JOB_ID, VERSION, JOB_NAME, CRON) VALUES (2, 1, 'myBatchJob1', '0/10 * * * * ?');

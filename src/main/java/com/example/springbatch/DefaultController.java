@@ -22,4 +22,10 @@ public class DefaultController {
         return myCronJobService.startJob(jobId);
     }
 
+    @RequestMapping("/hello")
+    @ResponseBody
+    public Object hello() {
+        return null;
+    }
+
 }
